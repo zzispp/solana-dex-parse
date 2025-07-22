@@ -70,13 +70,11 @@ func (p *Parser) processTransfer(instr solana.CompiledInstruction) *TransferData
 
 	// Add bounds checking for account indices
 	if len(instr.Accounts) < 3 {
-		p.Log.Warnf("Transfer instruction has insufficient accounts (%d), skipping", len(instr.Accounts))
 		return nil
 	}
 
-	for i, accountIndex := range instr.Accounts[:3] {
+	for _, accountIndex := range instr.Accounts[:3] {
 		if int(accountIndex) >= len(p.allAccountKeys) {
-			p.Log.Warnf("Account index %d (position %d) is out of range (allAccountKeys length: %d), skipping transfer", accountIndex, i, len(p.allAccountKeys))
 			return nil
 		}
 	}
@@ -109,7 +107,6 @@ func (p *Parser) extractSPLTokenInfo() error {
 		if !accountInfo.Mint.IsZero() {
 			// Add bounds checking for AccountIndex
 			if int(accountInfo.AccountIndex) >= len(p.allAccountKeys) {
-				p.Log.Warnf("AccountIndex %d is out of range (allAccountKeys length: %d), skipping", accountInfo.AccountIndex, len(p.allAccountKeys))
 				continue
 			}
 			accountKey := p.allAccountKeys[accountInfo.AccountIndex].String()
@@ -123,7 +120,6 @@ func (p *Parser) extractSPLTokenInfo() error {
 	processInstruction := func(instr solana.CompiledInstruction) {
 		// Add bounds checking for ProgramIDIndex
 		if int(instr.ProgramIDIndex) >= len(p.allAccountKeys) {
-			p.Log.Warnf("ProgramIDIndex %d is out of range (allAccountKeys length: %d), skipping instruction", instr.ProgramIDIndex, len(p.allAccountKeys))
 			return
 		}
 
@@ -141,11 +137,9 @@ func (p *Parser) extractSPLTokenInfo() error {
 
 		// Add bounds checking for account indices
 		if int(instr.Accounts[0]) >= len(p.allAccountKeys) {
-			p.Log.Warnf("Account index %d is out of range (allAccountKeys length: %d), skipping instruction", instr.Accounts[0], len(p.allAccountKeys))
 			return
 		}
 		if int(instr.Accounts[1]) >= len(p.allAccountKeys) {
-			p.Log.Warnf("Account index %d is out of range (allAccountKeys length: %d), skipping instruction", instr.Accounts[1], len(p.allAccountKeys))
 			return
 		}
 
