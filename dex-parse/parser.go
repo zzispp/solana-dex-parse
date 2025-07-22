@@ -119,6 +119,11 @@ func (p *Parser) ParseTransaction() ([]SwapData, error) {
 
 	skip := false
 	for i, outerInstruction := range p.txInfo.Message.Instructions {
+		// Add bounds checking for ProgramIDIndex
+		if int(outerInstruction.ProgramIDIndex) >= len(p.allAccountKeys) {
+			p.Log.Warnf("ProgramIDIndex %d is out of range (allAccountKeys length: %d), skipping instruction %d", outerInstruction.ProgramIDIndex, len(p.allAccountKeys), i)
+			continue
+		}
 		progID := p.allAccountKeys[outerInstruction.ProgramIDIndex]
 		switch {
 		case progID.Equals(JUPITER_PROGRAM_ID):
@@ -148,6 +153,11 @@ func (p *Parser) ParseTransaction() ([]SwapData, error) {
 	}
 
 	for i, outerInstruction := range p.txInfo.Message.Instructions {
+		// Add bounds checking for ProgramIDIndex
+		if int(outerInstruction.ProgramIDIndex) >= len(p.allAccountKeys) {
+			p.Log.Warnf("ProgramIDIndex %d is out of range (allAccountKeys length: %d), skipping instruction %d", outerInstruction.ProgramIDIndex, len(p.allAccountKeys), i)
+			continue
+		}
 		progID := p.allAccountKeys[outerInstruction.ProgramIDIndex]
 		switch {
 		case progID.Equals(RAYDIUM_V4_PROGRAM_ID) ||
@@ -202,9 +212,17 @@ func (p *Parser) ProcessSwapData(swapDatas []SwapData) (*SwapInfo, error) {
 	}
 
 	if p.containsDCAProgram() {
-		swapInfo.Signers = []solana.PublicKey{p.allAccountKeys[2]}
+		if len(p.allAccountKeys) > 2 {
+			swapInfo.Signers = []solana.PublicKey{p.allAccountKeys[2]}
+		} else {
+			p.Log.Warnf("Cannot access account index 2 for DCA signer (allAccountKeys length: %d)", len(p.allAccountKeys))
+		}
 	} else {
-		swapInfo.Signers = []solana.PublicKey{p.allAccountKeys[0]}
+		if len(p.allAccountKeys) > 0 {
+			swapInfo.Signers = []solana.PublicKey{p.allAccountKeys[0]}
+		} else {
+			p.Log.Warnf("Cannot access account index 0 for signer (allAccountKeys length: %d)", len(p.allAccountKeys))
+		}
 	}
 
 	jupiterSwaps := make([]SwapData, 0)
@@ -508,6 +526,11 @@ func (p *Parser) processRouterSwaps(instructionIndex int) []SwapData {
 	processedProtocols := make(map[string]bool)
 
 	for _, inner := range innerInstructions {
+		// Add bounds checking for ProgramIDIndex in inner instructions
+		if int(inner.ProgramIDIndex) >= len(p.allAccountKeys) {
+			p.Log.Warnf("Inner instruction ProgramIDIndex %d is out of range (allAccountKeys length: %d), skipping", inner.ProgramIDIndex, len(p.allAccountKeys))
+			continue
+		}
 		progID := p.allAccountKeys[inner.ProgramIDIndex]
 
 		switch {

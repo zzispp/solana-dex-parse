@@ -18,6 +18,11 @@ func (p *Parser) processOKXSwaps(instructionIndex int) []SwapData {
 	p.Log.Infof("starting okx swap parsing for instruction index: %d", instructionIndex)
 
 	parentInstruction := p.txInfo.Message.Instructions[instructionIndex]
+	// Add bounds checking for ProgramIDIndex
+	if int(parentInstruction.ProgramIDIndex) >= len(p.allAccountKeys) {
+		p.Log.Warnf("ProgramIDIndex %d is out of range (allAccountKeys length: %d) in OKX processing", parentInstruction.ProgramIDIndex, len(p.allAccountKeys))
+		return nil
+	}
 	programID := p.allAccountKeys[parentInstruction.ProgramIDIndex]
 
 	if !programID.Equals(OKX_DEX_ROUTER_PROGRAM_ID) {
@@ -81,6 +86,11 @@ func (p *Parser) processOKXRouterSwaps(instructionIndex int) []SwapData {
 	}
 
 	for _, inner := range innerInstructions {
+		// Add bounds checking for ProgramIDIndex in inner instructions
+		if int(inner.ProgramIDIndex) >= len(p.allAccountKeys) {
+			p.Log.Warnf("Inner instruction ProgramIDIndex %d is out of range (allAccountKeys length: %d) in OKX processing", inner.ProgramIDIndex, len(p.allAccountKeys))
+			continue
+		}
 		progID := p.allAccountKeys[inner.ProgramIDIndex]
 
 		switch {

@@ -51,6 +51,19 @@ func (p *Parser) processMeteoraSwaps(instructionIndex int) []SwapData {
 func (p *Parser) processTransferCheck(instr solana.CompiledInstruction) *TransferCheck {
 	amount := binary.LittleEndian.Uint64(instr.Data[1:9])
 
+	// Add bounds checking for account indices
+	if len(instr.Accounts) < 4 {
+		p.Log.Warnf("TransferCheck instruction has insufficient accounts (%d), skipping", len(instr.Accounts))
+		return nil
+	}
+
+	for i, accountIndex := range instr.Accounts[:4] {
+		if int(accountIndex) >= len(p.allAccountKeys) {
+			p.Log.Warnf("Account index %d (position %d) is out of range (allAccountKeys length: %d), skipping transferCheck", accountIndex, i, len(p.allAccountKeys))
+			return nil
+		}
+	}
+
 	transferData := &TransferCheck{
 		Type: "transferChecked",
 	}

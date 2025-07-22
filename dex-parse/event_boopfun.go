@@ -36,6 +36,11 @@ func (p *Parser) processBoopFunSwaps(instructionIndex int) []SwapData {
 
 	// 首先尝试解析主指令数据
 	mainInstruction := p.txInfo.Message.Instructions[instructionIndex]
+	// Add bounds checking for ProgramIDIndex
+	if int(mainInstruction.ProgramIDIndex) >= len(p.allAccountKeys) {
+		p.Log.Warnf("ProgramIDIndex %d is out of range (allAccountKeys length: %d) in BoopFun processing", mainInstruction.ProgramIDIndex, len(p.allAccountKeys))
+		return swaps
+	}
 	programID := p.allAccountKeys[mainInstruction.ProgramIDIndex]
 
 	// 检查是否是 Boop.fun 程序
