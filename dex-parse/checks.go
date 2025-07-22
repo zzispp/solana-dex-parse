@@ -11,7 +11,6 @@ import (
 func (p *Parser) isTransfer(instr solana.CompiledInstruction) bool {
 	// Add bounds checking for ProgramIDIndex
 	if int(instr.ProgramIDIndex) >= len(p.allAccountKeys) {
-		p.Log.Warnf("ProgramIDIndex %d is out of range (allAccountKeys length: %d) in isTransfer check", instr.ProgramIDIndex, len(p.allAccountKeys))
 		return false
 	}
 	progID := p.allAccountKeys[instr.ProgramIDIndex]
@@ -41,7 +40,6 @@ func (p *Parser) isTransfer(instr solana.CompiledInstruction) bool {
 func (p *Parser) isTransferCheck(instr solana.CompiledInstruction) bool {
 	// Add bounds checking for ProgramIDIndex
 	if int(instr.ProgramIDIndex) >= len(p.allAccountKeys) {
-		p.Log.Warnf("ProgramIDIndex %d is out of range (allAccountKeys length: %d) in isTransferCheck", instr.ProgramIDIndex, len(p.allAccountKeys))
 		return false
 	}
 	progID := p.allAccountKeys[instr.ProgramIDIndex]
@@ -70,7 +68,6 @@ func (p *Parser) isTransferCheck(instr solana.CompiledInstruction) bool {
 func (p *Parser) isPumpFunTradeEventInstruction(inst solana.CompiledInstruction) bool {
 	// Add bounds checking for ProgramIDIndex
 	if int(inst.ProgramIDIndex) >= len(p.allAccountKeys) {
-		p.Log.Warnf("ProgramIDIndex %d is out of range (allAccountKeys length: %d) in isPumpFunTradeEventInstruction", inst.ProgramIDIndex, len(p.allAccountKeys))
 		return false
 	}
 	if !p.allAccountKeys[inst.ProgramIDIndex].Equals(PUMP_FUN_PROGRAM_ID) || len(inst.Data) < 16 {
@@ -86,7 +83,6 @@ func (p *Parser) isPumpFunTradeEventInstruction(inst solana.CompiledInstruction)
 func (p *Parser) isJupiterRouteEventInstruction(inst solana.CompiledInstruction) bool {
 	// Add bounds checking for ProgramIDIndex
 	if int(inst.ProgramIDIndex) >= len(p.allAccountKeys) {
-		p.Log.Warnf("ProgramIDIndex %d is out of range (allAccountKeys length: %d) in isJupiterRouteEventInstruction", inst.ProgramIDIndex, len(p.allAccountKeys))
 		return false
 	}
 	if !p.allAccountKeys[inst.ProgramIDIndex].Equals(JUPITER_PROGRAM_ID) || len(inst.Data) < 16 {

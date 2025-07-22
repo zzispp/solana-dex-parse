@@ -49,7 +49,6 @@ func (p *Parser) processMeteoraDBCSwaps(instructionIndex int) []SwapData {
 	mainInstruction := p.txInfo.Message.Instructions[instructionIndex]
 	// Add bounds checking for ProgramIDIndex
 	if int(mainInstruction.ProgramIDIndex) >= len(p.allAccountKeys) {
-		p.Log.Warnf("ProgramIDIndex %d is out of range (allAccountKeys length: %d) in Meteora DBC processing", mainInstruction.ProgramIDIndex, len(p.allAccountKeys))
 		return swaps
 	}
 	programID := p.allAccountKeys[mainInstruction.ProgramIDIndex]
@@ -124,7 +123,6 @@ func (p *Parser) parseMeteoraDBCEvent(instructionIndex int) *MeteoraDBCSwapEvent
 func (p *Parser) isMeteoraDBCEventInstruction(instruction solana.CompiledInstruction) bool {
 	// Add bounds checking for ProgramIDIndex
 	if int(instruction.ProgramIDIndex) >= len(p.allAccountKeys) {
-		p.Log.Warnf("ProgramIDIndex %d is out of range (allAccountKeys length: %d) in isMeteoraDBCEventInstruction", instruction.ProgramIDIndex, len(p.allAccountKeys))
 		return false
 	}
 	programID := p.allAccountKeys[instruction.ProgramIDIndex]

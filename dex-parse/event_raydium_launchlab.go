@@ -231,7 +231,6 @@ func (p *Parser) processRaydiumLaunchLabTransfers(instructionIndex int) []SwapDa
 func (p *Parser) isRaydiumLaunchLabEvent(inst solana.CompiledInstruction) bool {
 	// Add bounds checking for ProgramIDIndex
 	if int(inst.ProgramIDIndex) >= len(p.allAccountKeys) {
-		p.Log.Warnf("ProgramIDIndex %d is out of range (allAccountKeys length: %d) in isRaydiumLaunchLabEvent", inst.ProgramIDIndex, len(p.allAccountKeys))
 		return false
 	}
 	if !p.allAccountKeys[inst.ProgramIDIndex].Equals(RAYDIUM_LAUNCHLAB_PROGRAM_ID) {

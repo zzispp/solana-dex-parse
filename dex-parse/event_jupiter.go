@@ -105,7 +105,6 @@ func (p *Parser) extractSPLDecimals() error {
 	processInstruction := func(instr solana.CompiledInstruction) {
 		// Add bounds checking for ProgramIDIndex
 		if int(instr.ProgramIDIndex) >= len(p.allAccountKeys) {
-			p.Log.Warnf("ProgramIDIndex %d is out of range (allAccountKeys length: %d) in Jupiter processInstruction", instr.ProgramIDIndex, len(p.allAccountKeys))
 			return
 		}
 		if !p.allAccountKeys[instr.ProgramIDIndex].Equals(solana.TokenProgramID) {
@@ -122,7 +121,6 @@ func (p *Parser) extractSPLDecimals() error {
 
 		// Add bounds checking for account index
 		if int(instr.Accounts[1]) >= len(p.allAccountKeys) {
-			p.Log.Warnf("Account index %d is out of range (allAccountKeys length: %d) in Jupiter processInstruction", instr.Accounts[1], len(p.allAccountKeys))
 			return
 		}
 

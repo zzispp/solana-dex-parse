@@ -40,7 +40,6 @@ func (p *Parser) processMeteoraDAMMv2Swaps(instructionIndex int) []SwapData {
 	mainInstruction := p.txInfo.Message.Instructions[instructionIndex]
 	// Add bounds checking for ProgramIDIndex
 	if int(mainInstruction.ProgramIDIndex) >= len(p.allAccountKeys) {
-		p.Log.Warnf("ProgramIDIndex %d is out of range (allAccountKeys length: %d) in Meteora DAMM v2 processing", mainInstruction.ProgramIDIndex, len(p.allAccountKeys))
 		return swaps
 	}
 	programID := p.allAccountKeys[mainInstruction.ProgramIDIndex]
